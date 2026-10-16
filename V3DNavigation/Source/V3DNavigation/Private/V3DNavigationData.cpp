@@ -21,6 +21,8 @@ AV3DNavigationData::AV3DNavigationData()
 void AV3DNavigationData::BeginPlay()
 {
 	Super::BeginPlay();
+	Bounds = BoundsBox->Bounds.GetBox();
+	InitGridSize();
 	
 	//添加忽略列表
 	for (TSubclassOf<AActor> Class : IgnoreClasses)
@@ -31,9 +33,7 @@ void AV3DNavigationData::BeginPlay()
 	}
 	Params.AddIgnoredActors(IgnoreActors);
 	
-	
-	Bounds = BoundsBox->Bounds.GetBox();
-	InitGridSize();
+	CheckBoundsAndMakers();
 	DrawVoxels();
 	if (bDrawBounds)
 	{
@@ -71,11 +71,14 @@ void AV3DNavigationData::DrawVoxels()
 			{
 				FIntVector Voxel = FIntVector(x, y, z);
 				FVector CurrVoxel = VoxelToWord(Voxel);
-				CheckVoxelOverlap(Voxel);
+				
+				//逐个体素检测碰撞即将废弃
+				//CheckVoxelOverlap(Voxel);
 				if (bDrawBounds)
 				{
-					if (!IsBlocked(Voxel))
+					if (!IsBlocked(Voxel) )
 					{
+						if ( bDrawFreeVoxels)
 						DrawDebugBox(GetWorld(),
 						CurrVoxel,
 						FVector::One() * VoxelSize * 0.5f,
@@ -100,8 +103,55 @@ void AV3DNavigationData::DrawVoxels()
 
 void AV3DNavigationData::CheckBoundsAndMakers()
 {
-	
-	
+	if (GridSize.X <= 0 || GridSize.Y <= 0 || GridSize.Z <= 0)
+	{
+		return;
+	}
+
+	const int32 ChunkCountX = (GridSize.X + CHUNK_SIZE - 1) / CHUNK_SIZE;
+	const int32 ChunkCountY = (GridSize.Y + CHUNK_SIZE - 1) / CHUNK_SIZE;
+	const int32 ChunkCountZ = (GridSize.Z + CHUNK_SIZE - 1) / CHUNK_SIZE;
+
+	for (int32 x = 0; x < ChunkCountX; x++)
+	{
+		for (int32 y = 0; y < ChunkCountY; y++)
+		{
+			for (int32 z = 0; z < ChunkCountZ; z++)
+			{
+				const FIntVector ChunkVoxelMin(x * CHUNK_SIZE, y * CHUNK_SIZE, z * CHUNK_SIZE);
+				const FIntVector ChunkVoxelMax(
+					FMath::Min((x + 1) * CHUNK_SIZE, GridSize.X) - 1,
+					FMath::Min((y + 1) * CHUNK_SIZE, GridSize.Y) - 1,
+					FMath::Min((z + 1) * CHUNK_SIZE, GridSize.Z) - 1);
+				const FIntVector ChunkVoxelCenter = (ChunkVoxelMin + ChunkVoxelMax) / 2;
+				const FVector Center = VoxelToWord(ChunkVoxelCenter);
+				// 该 chunk 实际体素边长（最后一块可能不足 CHUNK_SIZE）
+				const int32 ActualExtentX = ChunkVoxelMax.X - ChunkVoxelMin.X + 1;
+				const int32 ActualExtentY = ChunkVoxelMax.Y - ChunkVoxelMin.Y + 1;
+				const int32 ActualExtentZ = ChunkVoxelMax.Z - ChunkVoxelMin.Z + 1;
+
+				//分chunk检测碰撞，命中后走八叉细分
+				if (CheckChunkOverlap(Center))
+				{
+					SubdivideAndCheck(ChunkVoxelMin, ChunkVoxelMax);
+				}
+
+				//chunk范围调试信息展示
+				if (bDrawChunks)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Chunk=(%d,%d,%d) Extent=(%d,%d,%d)"),
+						ChunkVoxelMin.X, ChunkVoxelMin.Y, ChunkVoxelMin.Z,
+						ActualExtentX, ActualExtentY, ActualExtentZ);
+					DrawDebugBox(GetWorld(),
+							Center,
+							FVector(ActualExtentX, ActualExtentY, ActualExtentZ) * VoxelSize * 0.5f,
+							FQuat::Identity,
+							FColor::Yellow,
+							true);
+				}
+			}
+		}
+	}
 }
 
 void AV3DNavigationData::CheckVoxelOverlap(const FIntVector& Voxel)
@@ -109,7 +159,61 @@ void AV3DNavigationData::CheckVoxelOverlap(const FIntVector& Voxel)
 	FCollisionShape Box = FCollisionShape::MakeBox(FVector(VoxelSize * 0.5f));
 	
 	bool bBlocked = GetWorld()->OverlapBlockingTestByChannel(VoxelToWord(Voxel), FQuat::Identity, ECC_WorldStatic, Box, Params);
+	if (bBlocked)
+	{
 	SetBlocked(Voxel,bBlocked);
+	}
+}
+
+bool AV3DNavigationData::CheckChunkOverlap(const FVector& Local)
+{
+	FCollisionShape Box = FCollisionShape::MakeBox(FVector(CHUNK_SIZE * VoxelSize * 0.5f));
+	bool bBlocked = GetWorld()->OverlapBlockingTestByChannel(Local, FQuat::Identity, ECC_WorldStatic, Box, Params);
+	return bBlocked;
+}
+
+bool AV3DNavigationData::CheckSubRegionOverlap(const FVector& WorldCenter, int32 VoxelExtent)
+{
+	// 半尺寸 = 体素数 × VoxelSize × 0.5（保证单位与 CheckVoxelOverlap 一致）
+	FCollisionShape Box = FCollisionShape::MakeBox(FVector(VoxelExtent * VoxelSize * 0.5f));
+	return GetWorld()->OverlapBlockingTestByChannel(WorldCenter, FQuat::Identity, ECC_WorldStatic, Box, Params);
+}
+
+void AV3DNavigationData::SubdivideAndCheck(const FIntVector& VoxelMin, const FIntVector& VoxelMax)
+{
+	// 子块体素边长
+	const int32 Extent = VoxelMax.X - VoxelMin.X + 1;
+
+	// 终止条件：边长 1 个体素 => 直接做单个体素检测
+	if (Extent <= 1)
+	{
+		CheckVoxelOverlap(VoxelMin);
+		return;
+	}
+
+	// 计算子块世界中心点（取 Min/Max 中点体素）
+	const FIntVector MidVoxel = (VoxelMin + VoxelMax) / 2;
+	const FVector VoxelCenter = VoxelToWord(MidVoxel);
+
+	// 无碰撞 => 整体跳过，内部体素全自由
+	if (!CheckSubRegionOverlap(VoxelCenter, Extent))
+	{
+		return;
+	}
+
+	// 有碰撞且仍可细分 => 每维二分，递归处理 8 个子块
+	const int32 MidX = (VoxelMin.X + VoxelMax.X) / 2;
+	const int32 MidY = (VoxelMin.Y + VoxelMax.Y) / 2;
+	const int32 MidZ = (VoxelMin.Z + VoxelMax.Z) / 2;
+
+	SubdivideAndCheck(FIntVector(VoxelMin.X, VoxelMin.Y, VoxelMin.Z), FIntVector(MidX, MidY, MidZ));
+	SubdivideAndCheck(FIntVector(MidX + 1, VoxelMin.Y, VoxelMin.Z), FIntVector(VoxelMax.X, MidY, MidZ));
+	SubdivideAndCheck(FIntVector(VoxelMin.X, VoxelMin.Y, MidZ + 1), FIntVector(MidX, MidY, VoxelMax.Z));
+	SubdivideAndCheck(FIntVector(MidX + 1, VoxelMin.Y, MidZ + 1), FIntVector(VoxelMax.X, MidY, VoxelMax.Z));
+	SubdivideAndCheck(FIntVector(VoxelMin.X, MidY + 1, VoxelMin.Z), FIntVector(MidX, VoxelMax.Y, MidZ));
+	SubdivideAndCheck(FIntVector(MidX + 1, MidY + 1, VoxelMin.Z), FIntVector(VoxelMax.X, VoxelMax.Y, MidZ));
+	SubdivideAndCheck(FIntVector(VoxelMin.X, MidY + 1, MidZ + 1), FIntVector(MidX, VoxelMax.Y, VoxelMax.Z));
+	SubdivideAndCheck(FIntVector(MidX + 1, MidY + 1, MidZ + 1), FIntVector(VoxelMax.X, VoxelMax.Y, VoxelMax.Z));
 }
 
 // Called every frame
@@ -173,6 +277,72 @@ TArray<FVector> AV3DNavigationData::FindPath(const FIntVector& Start, const FInt
 	GScore.Init(kMaxDist, Total);
 	TArray<float> FScore;
 	FScore.Init(kMaxDist, Total);
+	TArray<bool> Closed;
+	Closed.Init(false, Total);
+
+	// 一次性构造本次寻路的扁平碰撞掩码，避免 A* 热循环中反复查 TMap/TUniquePtr
+	TArray<uint8, TInlineAllocator<64>> CollisionMask;
+	CollisionMask.SetNumZeroed(Total);
+	for (const auto& Pair : Chunks)
+	{
+		const FIntVector& ChunkCoord = Pair.Key;
+		const FVoxelChunk* Chunk = Pair.Value.Get();
+		if (!Chunk)
+		{
+			continue;
+		}
+
+		const int32 ChunkBaseIndex =
+			(ChunkCoord.Z * CHUNK_SIZE * GridSize.Y + ChunkCoord.Y * CHUNK_SIZE) * GridSize.X + ChunkCoord.X * CHUNK_SIZE;
+
+		for (int32 CZ = 0; CZ < CHUNK_SIZE; CZ++)
+		{
+			const int32 LocalZ = ChunkCoord.Z * CHUNK_SIZE + CZ;
+			if (LocalZ < 0 || LocalZ >= GridSize.Z)
+			{
+				continue;
+			}
+
+			for (int32 CY = 0; CY < CHUNK_SIZE; CY++)
+			{
+				const int32 LocalY = ChunkCoord.Y * CHUNK_SIZE + CY;
+				if (LocalY < 0 || LocalY >= GridSize.Y)
+				{
+					continue;
+				}
+
+				for (int32 CX = 0; CX < CHUNK_SIZE; CX++)
+				{
+					const int32 LocalX = ChunkCoord.X * CHUNK_SIZE + CX;
+					if (LocalX < 0 || LocalX >= GridSize.X)
+					{
+						continue;
+					}
+
+					const int32 VoxelIdx =
+						(LocalZ * GridSize.Y + LocalY) * GridSize.X + LocalX;
+
+					const int32 LocalIndex = CX + CY * CHUNK_SIZE + CZ * CHUNK_SIZE * CHUNK_SIZE;
+					if (LocalIndex < CHUNK_VOXELS && Chunk->Occupancy[LocalIndex])
+					{
+						CollisionMask[VoxelIdx] = 1;
+					}
+				}
+			}
+		}
+	}
+
+	auto IsBlockedFast = [&](int32 VoxelIdx)
+	{
+		return VoxelIdx >= 0 && VoxelIdx < Total && CollisionMask[VoxelIdx];
+	};
+
+	const int32 StartIdx = VoxelIndex(ClampedStart);
+	const int32 EndIdx = VoxelIndex(ClampedEnd);
+	if (IsBlockedFast(StartIdx) || IsBlockedFast(EndIdx))
+	{
+		return Path;
+	}
 
 	// 简易二叉堆优先队列
 	TArray<int32> Open;
@@ -230,8 +400,6 @@ TArray<FVector> AV3DNavigationData::FindPath(const FIntVector& Start, const FInt
 		return static_cast<float>(Max) * BodyCost + static_cast<float>(Min) * FaceCost;
 	};
 
-	const int32 StartIdx = VoxelIndex(ClampedStart);
-	const int32 EndIdx = VoxelIndex(ClampedEnd);
 	const float StartH = Heuristic(ClampedStart, ClampedEnd, FaceDiagonalCost, DiagonalCost);
 	GScore[StartIdx] = 0.0f;
 	FScore[StartIdx] = StartH;
@@ -241,6 +409,12 @@ TArray<FVector> AV3DNavigationData::FindPath(const FIntVector& Start, const FInt
 	while (Open.Num() > 0)
 	{
 		const int32 CurrentIdx = PopMin();
+		if (Closed[CurrentIdx])
+		{
+			continue;
+		}
+		Closed[CurrentIdx] = true;
+
 		if (CurrentIdx == EndIdx)
 		{
 			bFound = true;
@@ -259,30 +433,42 @@ TArray<FVector> AV3DNavigationData::FindPath(const FIntVector& Start, const FInt
 				continue;
 			}
 
-			// 斜向移动时，禁止斜穿墙角：斜向经过的相邻轴向体素必须都未阻挡
-			if (D[0] != 0 && D[1] != 0 &&
-				(IsBlocked(FIntVector(NX, Current.Y, Current.Z)) || IsBlocked(FIntVector(Current.X, NY, Current.Z))))
-			{
-				continue;
-			}
-			if (D[0] != 0 && D[2] != 0 &&
-				(IsBlocked(FIntVector(NX, Current.Y, NZ)) || IsBlocked(FIntVector(Current.X, Current.Y, NZ))))
-			{
-				continue;
-			}
-			if (D[1] != 0 && D[2] != 0 &&
-				(IsBlocked(FIntVector(Current.X, NY, NZ)) || IsBlocked(FIntVector(Current.X, Current.Y, NZ))))
-			{
-				continue;
-			}
-
 			const FIntVector Neighbor(NX, NY, NZ);
-			if (IsBlocked(Neighbor))
+			const int32 NeighborIdx = VoxelIndex(Neighbor);
+			if (Closed[NeighborIdx] || IsBlockedFast(NeighborIdx))
 			{
 				continue;
 			}
 
-			const int32 NeighborIdx = VoxelIndex(Neighbor);
+			// 斜向移动时，禁止斜穿墙角：斜向经过的相邻轴向体素必须都未阻挡
+			if (D[0] != 0 && D[1] != 0)
+			{
+				const int32 Side1Idx = VoxelIndex(FIntVector(NX, Current.Y, Current.Z));
+				const int32 Side2Idx = VoxelIndex(FIntVector(Current.X, NY, Current.Z));
+				if (IsBlockedFast(Side1Idx) || IsBlockedFast(Side2Idx))
+				{
+					continue;
+				}
+			}
+			if (D[0] != 0 && D[2] != 0)
+			{
+				const int32 Side1Idx = VoxelIndex(FIntVector(NX, Current.Y, NZ));
+				const int32 Side2Idx = VoxelIndex(FIntVector(Current.X, Current.Y, NZ));
+				if (IsBlockedFast(Side1Idx) || IsBlockedFast(Side2Idx))
+				{
+					continue;
+				}
+			}
+			if (D[1] != 0 && D[2] != 0)
+			{
+				const int32 Side1Idx = VoxelIndex(FIntVector(Current.X, NY, NZ));
+				const int32 Side2Idx = VoxelIndex(FIntVector(Current.X, Current.Y, NZ));
+				if (IsBlockedFast(Side1Idx) || IsBlockedFast(Side2Idx))
+				{
+					continue;
+				}
+			}
+
 			float MoveCost;
 			if (D[0] != 0 && D[1] != 0 && D[2] != 0)
 			{

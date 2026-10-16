@@ -290,6 +290,20 @@ struct Z_Construct_UClass_AV3DNavigationData_Statics
 		{ "ModuleRelativePath", "Public/V3DNavigationData.h" },
 		{ "ToolTip", "\xe8\xb0\x83\xe8\xaf\x95\xe4\xbf\xa1\xe6\x81\xaf" },
 	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_bDrawChunks_MetaData[] = {
+		{ "Category", "V3DNavigation" },
+		{ "ModuleRelativePath", "Public/V3DNavigationData.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_bDrawFreeVoxels_MetaData[] = {
+		{ "Category", "V3DNavigation" },
+		{ "ModuleRelativePath", "Public/V3DNavigationData.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_SubdivideFactor_MetaData[] = {
+		{ "Category", "V3DNavigation" },
+		{ "Comment", "//\xe7\xa2\xb0\xe6\x92\x9e\xe7\xbb\x86\xe5\x88\x86\xe5\x9b\xa0\xe5\xad\x90\xef\xbc\x9a\xe6\xaf\x8f\xe7\xbb\xb4\xe4\xba\x8c\xe5\x88\x86 => 8\xe4\xb8\xaa\xe5\xad\x90\xe7\xab\x8b\xe6\x96\xb9\xe4\xbd\x93\xef\xbc\x88\xe5\x85\xab\xe5\x8f\x89\xef\xbc\x89\n" },
+		{ "ModuleRelativePath", "Public/V3DNavigationData.h" },
+		{ "ToolTip", "\xe7\xa2\xb0\xe6\x92\x9e\xe7\xbb\x86\xe5\x88\x86\xe5\x9b\xa0\xe5\xad\x90\xef\xbc\x9a\xe6\xaf\x8f\xe7\xbb\xb4\xe4\xba\x8c\xe5\x88\x86 => 8\xe4\xb8\xaa\xe5\xad\x90\xe7\xab\x8b\xe6\x96\xb9\xe4\xbd\x93\xef\xbc\x88\xe5\x85\xab\xe5\x8f\x89\xef\xbc\x89" },
+	};
 #endif // WITH_METADATA
 
 // ********** Begin Class AV3DNavigationData constinit property declarations ***********************
@@ -302,6 +316,11 @@ struct Z_Construct_UClass_AV3DNavigationData_Statics
 	static const UECodeGen_Private::FStructPropertyParams NewProp_GridSize;
 	static void NewProp_bDrawBounds_SetBit(void* Obj);
 	static const UECodeGen_Private::FBoolPropertyParams NewProp_bDrawBounds;
+	static void NewProp_bDrawChunks_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_bDrawChunks;
+	static void NewProp_bDrawFreeVoxels_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_bDrawFreeVoxels;
+	static const UECodeGen_Private::FIntPropertyParams NewProp_SubdivideFactor;
 	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 // ********** End Class AV3DNavigationData constinit property declarations *************************
 	static constexpr UE::CodeGen::FClassNativeFunction Funcs[] = {
@@ -335,6 +354,17 @@ void Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_bDrawBounds_SetBit(v
 	((AV3DNavigationData*)Obj)->bDrawBounds = 1;
 }
 const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_bDrawBounds = { "bDrawBounds", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(AV3DNavigationData), &Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_bDrawBounds_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_bDrawBounds_MetaData), NewProp_bDrawBounds_MetaData) };
+void Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_bDrawChunks_SetBit(void* Obj)
+{
+	((AV3DNavigationData*)Obj)->bDrawChunks = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_bDrawChunks = { "bDrawChunks", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(AV3DNavigationData), &Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_bDrawChunks_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_bDrawChunks_MetaData), NewProp_bDrawChunks_MetaData) };
+void Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_bDrawFreeVoxels_SetBit(void* Obj)
+{
+	((AV3DNavigationData*)Obj)->bDrawFreeVoxels = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_bDrawFreeVoxels = { "bDrawFreeVoxels", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(AV3DNavigationData), &Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_bDrawFreeVoxels_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_bDrawFreeVoxels_MetaData), NewProp_bDrawFreeVoxels_MetaData) };
+const UECodeGen_Private::FIntPropertyParams Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_SubdivideFactor = { "SubdivideFactor", nullptr, (EPropertyFlags)0x0010000000000001, UECodeGen_Private::EPropertyGenFlags::Int, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AV3DNavigationData, SubdivideFactor), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_SubdivideFactor_MetaData), NewProp_SubdivideFactor_MetaData) };
 const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_AV3DNavigationData_Statics::PropPointers[] = {
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_BoundsRoot,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_BoundsBox,
@@ -344,6 +374,9 @@ const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_AV3DNavig
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_VoxelSize,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_GridSize,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_bDrawBounds,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_bDrawChunks,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_bDrawFreeVoxels,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_SubdivideFactor,
 };
 static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_AV3DNavigationData_Statics::PropPointers) < 2048);
 // ********** End Class AV3DNavigationData Property Definitions ************************************
@@ -388,10 +421,10 @@ AV3DNavigationData::~AV3DNavigationData() {}
 struct Z_CompiledInDeferFile_FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h__Script_V3DNavigation_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_AV3DNavigationData, AV3DNavigationData::StaticClass, TEXT("AV3DNavigationData"), &Z_Registration_Info_UClass_AV3DNavigationData, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AV3DNavigationData), 3425580954U) },
+		{ Z_Construct_UClass_AV3DNavigationData, AV3DNavigationData::StaticClass, TEXT("AV3DNavigationData"), &Z_Registration_Info_UClass_AV3DNavigationData, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AV3DNavigationData), 2020932899U) },
 	};
 }; // Z_CompiledInDeferFile_FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h__Script_V3DNavigation_Statics 
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h__Script_V3DNavigation_1288466286{
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h__Script_V3DNavigation_1740325905{
 	TEXT("/Script/V3DNavigation"),
 	Z_CompiledInDeferFile_FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h__Script_V3DNavigation_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h__Script_V3DNavigation_Statics::ClassInfo),
 	nullptr, 0,

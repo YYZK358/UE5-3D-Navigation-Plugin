@@ -86,6 +86,14 @@ public:
 	//调试信息
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "V3DNavigation")
 	bool bDrawBounds = false;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "V3DNavigation")
+	bool bDrawChunks = false;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "V3DNavigation")
+	bool bDrawFreeVoxels = false;
+	
+	//碰撞细分因子：每维二分 => 8个子立方体（八叉）
+	UPROPERTY(EditAnywhere,Category = "V3DNavigation")
+	int32 SubdivideFactor = 2;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -98,6 +106,11 @@ protected:
 	
 	void CheckBoundsAndMakers();
 	void CheckVoxelOverlap(const FIntVector& Voxel);
+	bool CheckChunkOverlap(const FVector& Local);
+	//对体素范围 [Min,Max] 做层级八叉细分碰撞检测
+	void SubdivideAndCheck(const FIntVector& VoxelMin, const FIntVector& VoxelMax);
+	//对子块中心做 overlap 检测，box 半尺寸 = 体素数×VoxelSize×0.5
+	bool CheckSubRegionOverlap(const FVector& WorldCenter, int32 VoxelExtent);
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
