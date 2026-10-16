@@ -1,0 +1,8 @@
+{
+	"OutputFiles": [
+		"Module.V3DNavigation.cpp.obj",
+		"AirPathfindingComponent.cpp.obj",
+		"V3DNavigation.cpp.obj",
+		"V3DNavigationData.cpp.obj"
+	]
+}
