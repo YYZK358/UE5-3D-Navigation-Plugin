@@ -23,7 +23,84 @@ ENGINE_API UClass* Z_Construct_UClass_USceneComponent_NoRegister();
 UPackage* Z_Construct_UPackage__Script_V3DNavigation();
 V3DNAVIGATION_API UClass* Z_Construct_UClass_AV3DNavigationData();
 V3DNAVIGATION_API UClass* Z_Construct_UClass_AV3DNavigationData_NoRegister();
+V3DNAVIGATION_API UFunction* Z_Construct_UDelegateFunction_V3DNavigation_OnPathFound__DelegateSignature();
 // ********** End Cross Module References **********************************************************
+
+// ********** Begin Delegate FOnPathFound **********************************************************
+struct Z_Construct_UDelegateFunction_V3DNavigation_OnPathFound__DelegateSignature_Statics
+{
+	struct _Script_V3DNavigation_eventOnPathFound_Parms
+	{
+		int64 RequestID;
+		TArray<FVector> PathPoints;
+		bool bSuccess;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "ModuleRelativePath", "Public/V3DNavigationData.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_PathPoints_MetaData[] = {
+		{ "NativeConst", "" },
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Delegate FOnPathFound constinit property declarations **************************
+	static const UECodeGen_Private::FInt64PropertyParams NewProp_RequestID;
+	static const UECodeGen_Private::FStructPropertyParams NewProp_PathPoints_Inner;
+	static const UECodeGen_Private::FArrayPropertyParams NewProp_PathPoints;
+	static void NewProp_bSuccess_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_bSuccess;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Delegate FOnPathFound constinit property declarations ****************************
+	static const UECodeGen_Private::FDelegateFunctionParams FuncParams;
+};
+
+// ********** Begin Delegate FOnPathFound Property Definitions *************************************
+const UECodeGen_Private::FInt64PropertyParams Z_Construct_UDelegateFunction_V3DNavigation_OnPathFound__DelegateSignature_Statics::NewProp_RequestID = { "RequestID", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Int64, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(_Script_V3DNavigation_eventOnPathFound_Parms, RequestID), METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FStructPropertyParams Z_Construct_UDelegateFunction_V3DNavigation_OnPathFound__DelegateSignature_Statics::NewProp_PathPoints_Inner = { "PathPoints", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, Z_Construct_UScriptStruct_FVector, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FArrayPropertyParams Z_Construct_UDelegateFunction_V3DNavigation_OnPathFound__DelegateSignature_Statics::NewProp_PathPoints = { "PathPoints", nullptr, (EPropertyFlags)0x0010000008000182, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(_Script_V3DNavigation_eventOnPathFound_Parms, PathPoints), EArrayPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_PathPoints_MetaData), NewProp_PathPoints_MetaData) };
+void Z_Construct_UDelegateFunction_V3DNavigation_OnPathFound__DelegateSignature_Statics::NewProp_bSuccess_SetBit(void* Obj)
+{
+	((_Script_V3DNavigation_eventOnPathFound_Parms*)Obj)->bSuccess = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UDelegateFunction_V3DNavigation_OnPathFound__DelegateSignature_Statics::NewProp_bSuccess = { "bSuccess", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(_Script_V3DNavigation_eventOnPathFound_Parms), &Z_Construct_UDelegateFunction_V3DNavigation_OnPathFound__DelegateSignature_Statics::NewProp_bSuccess_SetBit, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UDelegateFunction_V3DNavigation_OnPathFound__DelegateSignature_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UDelegateFunction_V3DNavigation_OnPathFound__DelegateSignature_Statics::NewProp_RequestID,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UDelegateFunction_V3DNavigation_OnPathFound__DelegateSignature_Statics::NewProp_PathPoints_Inner,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UDelegateFunction_V3DNavigation_OnPathFound__DelegateSignature_Statics::NewProp_PathPoints,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UDelegateFunction_V3DNavigation_OnPathFound__DelegateSignature_Statics::NewProp_bSuccess,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UDelegateFunction_V3DNavigation_OnPathFound__DelegateSignature_Statics::PropPointers) < 2048);
+// ********** End Delegate FOnPathFound Property Definitions ***************************************
+const UECodeGen_Private::FDelegateFunctionParams Z_Construct_UDelegateFunction_V3DNavigation_OnPathFound__DelegateSignature_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UPackage__Script_V3DNavigation, nullptr, "OnPathFound__DelegateSignature", 	Z_Construct_UDelegateFunction_V3DNavigation_OnPathFound__DelegateSignature_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UDelegateFunction_V3DNavigation_OnPathFound__DelegateSignature_Statics::PropPointers), 
+sizeof(Z_Construct_UDelegateFunction_V3DNavigation_OnPathFound__DelegateSignature_Statics::_Script_V3DNavigation_eventOnPathFound_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x00530000, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UDelegateFunction_V3DNavigation_OnPathFound__DelegateSignature_Statics::Function_MetaDataParams), Z_Construct_UDelegateFunction_V3DNavigation_OnPathFound__DelegateSignature_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UDelegateFunction_V3DNavigation_OnPathFound__DelegateSignature_Statics::_Script_V3DNavigation_eventOnPathFound_Parms) < MAX_uint16);
+UFunction* Z_Construct_UDelegateFunction_V3DNavigation_OnPathFound__DelegateSignature()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUDelegateFunction(&ReturnFunction, Z_Construct_UDelegateFunction_V3DNavigation_OnPathFound__DelegateSignature_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+void FOnPathFound_DelegateWrapper(const FMulticastScriptDelegate& OnPathFound, int64 RequestID, TArray<FVector> const& PathPoints, bool bSuccess)
+{
+	struct _Script_V3DNavigation_eventOnPathFound_Parms
+	{
+		int64 RequestID;
+		TArray<FVector> PathPoints;
+		bool bSuccess;
+	};
+	_Script_V3DNavigation_eventOnPathFound_Parms Parms;
+	Parms.RequestID=RequestID;
+	Parms.PathPoints=PathPoints;
+	Parms.bSuccess=bSuccess ? true : false;
+	OnPathFound.ProcessMulticastDelegate<UObject>(&Parms);
+}
+// ********** End Delegate FOnPathFound ************************************************************
 
 // ********** Begin Class AV3DNavigationData Function FindPath *************************************
 struct Z_Construct_UFunction_AV3DNavigationData_FindPath_Statics
@@ -94,6 +171,77 @@ DEFINE_FUNCTION(AV3DNavigationData::execFindPath)
 	P_NATIVE_END;
 }
 // ********** End Class AV3DNavigationData Function FindPath ***************************************
+
+// ********** Begin Class AV3DNavigationData Function FindPathAsync ********************************
+struct Z_Construct_UFunction_AV3DNavigationData_FindPathAsync_Statics
+{
+	struct V3DNavigationData_eventFindPathAsync_Parms
+	{
+		FIntVector Start;
+		FIntVector End;
+		int64 RequestId;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "V3DNavigation" },
+		{ "ModuleRelativePath", "Public/V3DNavigationData.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_Start_MetaData[] = {
+		{ "NativeConst", "" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_End_MetaData[] = {
+		{ "NativeConst", "" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_RequestId_MetaData[] = {
+		{ "NativeConst", "" },
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function FindPathAsync constinit property declarations *************************
+	static const UECodeGen_Private::FStructPropertyParams NewProp_Start;
+	static const UECodeGen_Private::FStructPropertyParams NewProp_End;
+	static const UECodeGen_Private::FInt64PropertyParams NewProp_RequestId;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function FindPathAsync constinit property declarations ***************************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function FindPathAsync Property Definitions ************************************
+const UECodeGen_Private::FStructPropertyParams Z_Construct_UFunction_AV3DNavigationData_FindPathAsync_Statics::NewProp_Start = { "Start", nullptr, (EPropertyFlags)0x0010000008000182, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(V3DNavigationData_eventFindPathAsync_Parms, Start), Z_Construct_UScriptStruct_FIntVector, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_Start_MetaData), NewProp_Start_MetaData) };
+const UECodeGen_Private::FStructPropertyParams Z_Construct_UFunction_AV3DNavigationData_FindPathAsync_Statics::NewProp_End = { "End", nullptr, (EPropertyFlags)0x0010000008000182, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(V3DNavigationData_eventFindPathAsync_Parms, End), Z_Construct_UScriptStruct_FIntVector, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_End_MetaData), NewProp_End_MetaData) };
+const UECodeGen_Private::FInt64PropertyParams Z_Construct_UFunction_AV3DNavigationData_FindPathAsync_Statics::NewProp_RequestId = { "RequestId", nullptr, (EPropertyFlags)0x0010000008000182, UECodeGen_Private::EPropertyGenFlags::Int64, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(V3DNavigationData_eventFindPathAsync_Parms, RequestId), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_RequestId_MetaData), NewProp_RequestId_MetaData) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_AV3DNavigationData_FindPathAsync_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_AV3DNavigationData_FindPathAsync_Statics::NewProp_Start,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_AV3DNavigationData_FindPathAsync_Statics::NewProp_End,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_AV3DNavigationData_FindPathAsync_Statics::NewProp_RequestId,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_AV3DNavigationData_FindPathAsync_Statics::PropPointers) < 2048);
+// ********** End Function FindPathAsync Property Definitions **************************************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_AV3DNavigationData_FindPathAsync_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_AV3DNavigationData, nullptr, "FindPathAsync", 	Z_Construct_UFunction_AV3DNavigationData_FindPathAsync_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_AV3DNavigationData_FindPathAsync_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_AV3DNavigationData_FindPathAsync_Statics::V3DNavigationData_eventFindPathAsync_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04C20401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_AV3DNavigationData_FindPathAsync_Statics::Function_MetaDataParams), Z_Construct_UFunction_AV3DNavigationData_FindPathAsync_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_AV3DNavigationData_FindPathAsync_Statics::V3DNavigationData_eventFindPathAsync_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_AV3DNavigationData_FindPathAsync()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_AV3DNavigationData_FindPathAsync_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(AV3DNavigationData::execFindPathAsync)
+{
+	P_GET_STRUCT_REF(FIntVector,Z_Param_Out_Start);
+	P_GET_STRUCT_REF(FIntVector,Z_Param_Out_End);
+	P_GET_PROPERTY_REF(FInt64Property,Z_Param_Out_RequestId);
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	P_THIS->FindPathAsync(Z_Param_Out_Start,Z_Param_Out_End,Z_Param_Out_RequestId);
+	P_NATIVE_END;
+}
+// ********** End Class AV3DNavigationData Function FindPathAsync **********************************
 
 // ********** Begin Class AV3DNavigationData Function VoxelToWord **********************************
 struct Z_Construct_UFunction_AV3DNavigationData_VoxelToWord_Statics
@@ -266,6 +414,12 @@ struct Z_Construct_UClass_AV3DNavigationData_Statics
 		{ "Category", "V3DNavigation" },
 		{ "ModuleRelativePath", "Public/V3DNavigationData.h" },
 	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_OnPathFound_MetaData[] = {
+		{ "Category", "V3DNavigation" },
+		{ "Comment", "//\xe5\xa7\x94\xe6\x89\x98\xe6\x89\xbe\xe5\x88\xb0\xe8\xb7\xaf\xe5\xbe\x84\n" },
+		{ "ModuleRelativePath", "Public/V3DNavigationData.h" },
+		{ "ToolTip", "\xe5\xa7\x94\xe6\x89\x98\xe6\x89\xbe\xe5\x88\xb0\xe8\xb7\xaf\xe5\xbe\x84" },
+	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_Bounds_MetaData[] = {
 		{ "Category", "V3DNavigation" },
 		{ "Comment", "//\xe7\xa9\xba\xe5\x9f\x9f\xe5\xa4\xa7\xe5\xb0\x8f\n" },
@@ -311,6 +465,7 @@ struct Z_Construct_UClass_AV3DNavigationData_Statics
 	static const UECodeGen_Private::FObjectPropertyParams NewProp_BoundsBox;
 	static const UECodeGen_Private::FClassPropertyParams NewProp_IgnoreClasses_Inner;
 	static const UECodeGen_Private::FArrayPropertyParams NewProp_IgnoreClasses;
+	static const UECodeGen_Private::FMulticastDelegatePropertyParams NewProp_OnPathFound;
 	static const UECodeGen_Private::FStructPropertyParams NewProp_Bounds;
 	static const UECodeGen_Private::FFloatPropertyParams NewProp_VoxelSize;
 	static const UECodeGen_Private::FStructPropertyParams NewProp_GridSize;
@@ -325,12 +480,14 @@ struct Z_Construct_UClass_AV3DNavigationData_Statics
 // ********** End Class AV3DNavigationData constinit property declarations *************************
 	static constexpr UE::CodeGen::FClassNativeFunction Funcs[] = {
 		{ .NameUTF8 = UTF8TEXT("FindPath"), .Pointer = &AV3DNavigationData::execFindPath },
+		{ .NameUTF8 = UTF8TEXT("FindPathAsync"), .Pointer = &AV3DNavigationData::execFindPathAsync },
 		{ .NameUTF8 = UTF8TEXT("VoxelToWord"), .Pointer = &AV3DNavigationData::execVoxelToWord },
 		{ .NameUTF8 = UTF8TEXT("WordToVoxel"), .Pointer = &AV3DNavigationData::execWordToVoxel },
 	};
 	static UObject* (*const DependentSingletons[])();
 	static constexpr FClassFunctionLinkInfo FuncInfo[] = {
 		{ &Z_Construct_UFunction_AV3DNavigationData_FindPath, "FindPath" }, // 834411527
+		{ &Z_Construct_UFunction_AV3DNavigationData_FindPathAsync, "FindPathAsync" }, // 2760038814
 		{ &Z_Construct_UFunction_AV3DNavigationData_VoxelToWord, "VoxelToWord" }, // 2392601833
 		{ &Z_Construct_UFunction_AV3DNavigationData_WordToVoxel, "WordToVoxel" }, // 242006140
 	};
@@ -346,6 +503,7 @@ const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AV3DNavigation
 const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_BoundsBox = { "BoundsBox", nullptr, (EPropertyFlags)0x00100000000a0009, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AV3DNavigationData, BoundsBox), Z_Construct_UClass_UBoxComponent_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_BoundsBox_MetaData), NewProp_BoundsBox_MetaData) };
 const UECodeGen_Private::FClassPropertyParams Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_IgnoreClasses_Inner = { "IgnoreClasses", nullptr, (EPropertyFlags)0x0004000000000000, UECodeGen_Private::EPropertyGenFlags::Class, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, Z_Construct_UClass_UClass_NoRegister, Z_Construct_UClass_AActor_NoRegister, METADATA_PARAMS(0, nullptr) };
 const UECodeGen_Private::FArrayPropertyParams Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_IgnoreClasses = { "IgnoreClasses", nullptr, (EPropertyFlags)0x0014000000000005, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AV3DNavigationData, IgnoreClasses), EArrayPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_IgnoreClasses_MetaData), NewProp_IgnoreClasses_MetaData) };
+const UECodeGen_Private::FMulticastDelegatePropertyParams Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_OnPathFound = { "OnPathFound", nullptr, (EPropertyFlags)0x0010000010080000, UECodeGen_Private::EPropertyGenFlags::InlineMulticastDelegate, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AV3DNavigationData, OnPathFound), Z_Construct_UDelegateFunction_V3DNavigation_OnPathFound__DelegateSignature, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_OnPathFound_MetaData), NewProp_OnPathFound_MetaData) }; // 42001847
 const UECodeGen_Private::FStructPropertyParams Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_Bounds = { "Bounds", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AV3DNavigationData, Bounds), Z_Construct_UScriptStruct_FBox, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_Bounds_MetaData), NewProp_Bounds_MetaData) };
 const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_VoxelSize = { "VoxelSize", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AV3DNavigationData, VoxelSize), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_VoxelSize_MetaData), NewProp_VoxelSize_MetaData) };
 const UECodeGen_Private::FStructPropertyParams Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_GridSize = { "GridSize", nullptr, (EPropertyFlags)0x0010000000000014, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AV3DNavigationData, GridSize), Z_Construct_UScriptStruct_FIntVector, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_GridSize_MetaData), NewProp_GridSize_MetaData) };
@@ -370,6 +528,7 @@ const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_AV3DNavig
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_BoundsBox,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_IgnoreClasses_Inner,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_IgnoreClasses,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_OnPathFound,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_Bounds,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_VoxelSize,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AV3DNavigationData_Statics::NewProp_GridSize,
@@ -421,10 +580,10 @@ AV3DNavigationData::~AV3DNavigationData() {}
 struct Z_CompiledInDeferFile_FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h__Script_V3DNavigation_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_AV3DNavigationData, AV3DNavigationData::StaticClass, TEXT("AV3DNavigationData"), &Z_Registration_Info_UClass_AV3DNavigationData, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AV3DNavigationData), 2020932899U) },
+		{ Z_Construct_UClass_AV3DNavigationData, AV3DNavigationData::StaticClass, TEXT("AV3DNavigationData"), &Z_Registration_Info_UClass_AV3DNavigationData, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AV3DNavigationData), 769808208U) },
 	};
 }; // Z_CompiledInDeferFile_FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h__Script_V3DNavigation_Statics 
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h__Script_V3DNavigation_1740325905{
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h__Script_V3DNavigation_1106918118{
 	TEXT("/Script/V3DNavigation"),
 	Z_CompiledInDeferFile_FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h__Script_V3DNavigation_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h__Script_V3DNavigation_Statics::ClassInfo),
 	nullptr, 0,

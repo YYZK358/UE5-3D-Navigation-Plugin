@@ -2,7 +2,11 @@
 
 
 #include "V3DNavigationData.h"
+
+#include "AirPathfindingComponent.h"
+#include "V3DNavigtion_Interface.h"
 #include "Components/BoxComponent.h"
+#include "Engine/OverlapResult.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -13,7 +17,7 @@ AV3DNavigationData::AV3DNavigationData()
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("BoundsRoot"));
 	BoundsBox = CreateDefaultSubobject<UBoxComponent>(TEXT("BoundsBox"));
 	BoundsBox->SetupAttachment(RootComponent);
-	
+	//BoundsBox->SetCollisionProfileName(FName("Trigger"));
 	
 }
 
@@ -21,9 +25,10 @@ AV3DNavigationData::AV3DNavigationData()
 void AV3DNavigationData::BeginPlay()
 {
 	Super::BeginPlay();
+	BoundsBox->UpdateBounds();
 	Bounds = BoundsBox->Bounds.GetBox();
+	SetChild();
 	InitGridSize();
-	
 	//添加忽略列表
 	for (TSubclassOf<AActor> Class : IgnoreClasses)
 	{
@@ -31,6 +36,7 @@ void AV3DNavigationData::BeginPlay()
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(),Class,outActors);
 		IgnoreActors.Append(outActors);
 	}
+	
 	Params.AddIgnoredActors(IgnoreActors);
 	
 	CheckBoundsAndMakers();
@@ -221,6 +227,31 @@ void AV3DNavigationData::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void AV3DNavigationData::SetChild()
+{
+	//TArray<AActor*> tChildren;
+	TArray<FOverlapResult> Overlaps;
+	FComponentQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+	GetWorld()->ComponentOverlapMultiByChannel(
+		Overlaps,
+		BoundsBox,
+		BoundsBox->GetComponentLocation(),
+		BoundsBox->GetComponentRotation(),
+		ECC_WorldDynamic,
+		QueryParams
+	);
+	//BoundsBox->GetOverlappingActors(tChildren);
+	for (int32 i = 0; i < Overlaps.Num(); i++)
+	{
+		UActorComponent* AirCom = Overlaps[i].GetActor()->GetComponentByClass(UAirPathfindingComponent::StaticClass());
+		if (!AirCom) continue;
+		IV3DNavigtion_Interface* interface = Cast<IV3DNavigtion_Interface>(AirCom);
+		if (!interface) continue;
+		interface->SetNavigator(this);
+	}
 }
 
 TArray<FVector> AV3DNavigationData::FindPath(const FIntVector& Start, const FIntVector& End)
@@ -532,6 +563,350 @@ TArray<FVector> AV3DNavigationData::FindPath(const FIntVector& Start, const FInt
 	}
 
 	return Path;
+}
+
+void AV3DNavigationData::FindPathAsync(const FIntVector& Start, const FIntVector& End,const int64& RequestId)
+{
+	auto FindPathTask = [](const FIntVector& Start, const FIntVector& End,AV3DNavigationData* ThisNavi,const int64& RequestId)
+	{
+		TArray<FVector> Path;
+		float VoxelSize = ThisNavi->VoxelSize;
+		FIntVector GridSize = ThisNavi->GridSize;
+
+		// 将起终点夹取到合法范围内，越界或不可达则返回空路径
+		FIntVector ClampedStart = FIntVector(
+			FMath::Clamp(Start.X, 0, GridSize.X - 1),
+			FMath::Clamp(Start.Y, 0, GridSize.Y - 1),
+			FMath::Clamp(Start.Z, 0, GridSize.Z - 1));
+		FIntVector ClampedEnd = FIntVector(
+			FMath::Clamp(End.X, 0, GridSize.X - 1),
+			FMath::Clamp(End.Y, 0, GridSize.Y - 1),
+			FMath::Clamp(End.Z, 0, GridSize.Z - 1));
+
+		if (GridSize.X <= 0 || GridSize.Y <= 0 || GridSize.Z <= 0)
+		{
+			// 计算完成后，调度回主线程 GameThread
+			AsyncTask(ENamedThreads::GameThread, [ThisNavi, Path,RequestId]()
+			{
+				//  在主线程安全地广播结果，蓝图或其他监听者会收到通知
+				ThisNavi->OnPathFound.Broadcast(RequestId,Path,false);
+				
+			});
+			return;
+		}
+
+		// 起终点被阻挡则无法寻路
+		if (ThisNavi->IsBlocked(ClampedStart) || ThisNavi->IsBlocked(ClampedEnd))
+		{
+			// 计算完成后，调度回主线程 GameThread
+			AsyncTask(ENamedThreads::GameThread, [ThisNavi, Path,RequestId]()
+			{
+				//  在主线程安全地广播结果，蓝图或其他监听者会收到通知
+				ThisNavi->OnPathFound.Broadcast(RequestId,Path,false);
+			});
+			return;
+		}
+
+		// 26向移动：6轴 + 12对角 + 8体对角
+		static const int32 MoveDelta[26][3] = {
+			{1,0,0},{-1,0,0},{0,1,0},{0,-1,0},{0,0,1},{0,0,-1},
+			{1,1,0},{1,-1,0},{-1,1,0},{-1,-1,0},{1,0,1},{1,0,-1},
+			{-1,0,1},{-1,0,-1},{0,1,1},{0,1,-1},{0,-1,1},{0,-1,-1},
+			{1,1,1},{1,1,-1},{1,-1,1},{1,-1,-1},{-1,1,1},{-1,1,-1},
+			{-1,-1,1},{-1,-1,-1}
+		};
+
+		auto VoxelIndex = [GridSize](const FIntVector& V)
+		{
+			// 1D线性化索引
+			return (V.Z * GridSize.Y + V.Y) * GridSize.X + V.X;
+		};
+
+		const int32 Total = GridSize.X * GridSize.Y * GridSize.Z;
+		const float DiagonalCost = FMath::Sqrt(3.0f) * VoxelSize;
+		const float FaceDiagonalCost = FMath::Sqrt(2.0f) * VoxelSize;
+
+		// A* 所需数据结构
+		TArray<FIntVector> Parents;
+		Parents.Init({}, Total);
+		TArray<int32> ParentIndex;
+		ParentIndex.Init(INDEX_NONE, Total);
+		const float kMaxDist = FLT_MAX;
+		TArray<float> GScore;
+		GScore.Init(kMaxDist, Total);
+		TArray<float> FScore;
+		FScore.Init(kMaxDist, Total);
+		TArray<bool> Closed;
+		Closed.Init(false, Total);
+
+		// 一次性构造本次寻路的扁平碰撞掩码，避免 A* 热循环中反复查 TMap/TUniquePtr
+		TArray<uint8, TInlineAllocator<64>> CollisionMask;
+		CollisionMask.SetNumZeroed(Total);
+		for (const auto& Pair : ThisNavi->Chunks)
+		{
+			const FIntVector& ChunkCoord = Pair.Key;
+			const FVoxelChunk* Chunk = Pair.Value.Get();
+			if (!Chunk)
+			{
+				continue;
+			}
+
+			for (int32 CZ = 0; CZ < CHUNK_SIZE; CZ++)
+			{
+				const int32 LocalZ = ChunkCoord.Z * CHUNK_SIZE + CZ;
+				if (LocalZ < 0 || LocalZ >= GridSize.Z)
+				{
+					continue;
+				}
+
+				for (int32 CY = 0; CY < CHUNK_SIZE; CY++)
+				{
+					const int32 LocalY = ChunkCoord.Y * CHUNK_SIZE + CY;
+					if (LocalY < 0 || LocalY >= GridSize.Y)
+					{
+						continue;
+					}
+
+					for (int32 CX = 0; CX < CHUNK_SIZE; CX++)
+					{
+						const int32 LocalX = ChunkCoord.X * CHUNK_SIZE + CX;
+						if (LocalX < 0 || LocalX >= GridSize.X)
+						{
+							continue;
+						}
+
+						const int32 VoxelIdx =
+							(LocalZ * GridSize.Y + LocalY) * GridSize.X + LocalX;
+
+						const int32 LocalIndex = CX + CY * CHUNK_SIZE + CZ * CHUNK_SIZE * CHUNK_SIZE;
+						if (LocalIndex < CHUNK_VOXELS && Chunk->Occupancy[LocalIndex])
+						{
+							CollisionMask[VoxelIdx] = 1;
+						}
+					}
+				}
+			}
+		}
+
+		auto IsBlockedFast = [&](int32 VoxelIdx)
+		{
+			return VoxelIdx >= 0 && VoxelIdx < Total && CollisionMask[VoxelIdx];
+		};
+
+		const int32 StartIdx = VoxelIndex(ClampedStart);
+		const int32 EndIdx = VoxelIndex(ClampedEnd);
+		if (IsBlockedFast(StartIdx) || IsBlockedFast(EndIdx))
+		{
+			// 计算完成后，调度回主线程 GameThread
+			AsyncTask(ENamedThreads::GameThread, [ThisNavi, Path,RequestId]()
+			{
+				//  在主线程安全地广播结果，蓝图或其他监听者会收到通知
+				ThisNavi->OnPathFound.Broadcast(RequestId,Path,false);
+				
+			});
+			return;
+		}
+
+		// 简易二叉堆优先队列
+		TArray<int32> Open;
+		auto PopMin = [&]()
+		{
+			const int32 Idx = Open[0];
+			if (Open.Num() == 1)
+			{
+				Open.Reset();
+				return Idx;
+			}
+			Open[0] = Open.Pop();
+			int32 Cur = 0;
+			while (true)
+			{
+				int32 Left = Cur * 2 + 1;
+				int32 Right = Left + 1;
+				int32 Smallest = Cur;
+				if (Left < Open.Num() && FScore[Open[Left]] < FScore[Open[Smallest]])
+				{
+					Smallest = Left;
+				}
+				if (Right < Open.Num() && FScore[Open[Right]] < FScore[Open[Smallest]])
+				{
+					Smallest = Right;
+				}
+				if (Smallest == Cur) break;
+				Swap(Open[Cur], Open[Smallest]);
+				Cur = Smallest;
+			}
+			return Idx;
+		};
+		auto Push = [&](int32 Idx)
+		{
+			Open.Add(Idx);
+			int32 Cur = Open.Num() - 1;
+			while (Cur > 0)
+			{
+				const int32 Parent = (Cur - 1) / 2;
+				if (FScore[Open[Parent]] <= FScore[Open[Cur]]) break;
+				Swap(Open[Parent], Open[Cur]);
+				Cur = Parent;
+			}
+		};
+
+		// 启发函数：切比雪夫距离对应的3D欧氏代价
+		auto Heuristic = [](const FIntVector& A, const FIntVector& B, float FaceCost, float BodyCost)
+		{
+			int32 DX = FMath::Abs(A.X - B.X);
+			int32 DY = FMath::Abs(A.Y - B.Y);
+			int32 DZ = FMath::Abs(A.Z - B.Z);
+			int32 Min = FMath::Min(DX, FMath::Min(DY, DZ));
+			int32 Mid = DX + DY + DZ - 2 * Min;
+			int32 Max = DX + DY + DZ - 2 * (Min + Mid) - Min;
+			return static_cast<float>(Max) * BodyCost + static_cast<float>(Min) * FaceCost;
+		};
+
+		const float StartH = Heuristic(ClampedStart, ClampedEnd, FaceDiagonalCost, DiagonalCost);
+		GScore[StartIdx] = 0.0f;
+		FScore[StartIdx] = StartH;
+		Push(StartIdx);
+
+		bool bFound = false;
+		while (Open.Num() > 0)
+		{
+			const int32 CurrentIdx = PopMin();
+			if (Closed[CurrentIdx])
+			{
+				continue;
+			}
+			Closed[CurrentIdx] = true;
+
+			if (CurrentIdx == EndIdx)
+			{
+				bFound = true;
+				break;
+			}
+
+			FIntVector Current(CurrentIdx % GridSize.X, (CurrentIdx / GridSize.X) % GridSize.Y, CurrentIdx / (GridSize.X * GridSize.Y));
+
+			for (const auto& D : MoveDelta)
+			{
+				const int32 NX = Current.X + D[0];
+				const int32 NY = Current.Y + D[1];
+				const int32 NZ = Current.Z + D[2];
+				if (NX < 0 || NX >= GridSize.X || NY < 0 || NY >= GridSize.Y || NZ < 0 || NZ >= GridSize.Z)
+				{
+					continue;
+				}
+
+				const FIntVector Neighbor(NX, NY, NZ);
+				const int32 NeighborIdx = VoxelIndex(Neighbor);
+				if (Closed[NeighborIdx] || IsBlockedFast(NeighborIdx))
+				{
+					continue;
+				}
+
+				// 斜向移动时，禁止斜穿墙角：斜向经过的相邻轴向体素必须都未阻挡
+				if (D[0] != 0 && D[1] != 0)
+				{
+					const int32 Side1Idx = VoxelIndex(FIntVector(NX, Current.Y, Current.Z));
+					const int32 Side2Idx = VoxelIndex(FIntVector(Current.X, NY, Current.Z));
+					if (IsBlockedFast(Side1Idx) || IsBlockedFast(Side2Idx))
+					{
+						continue;
+					}
+				}
+				if (D[0] != 0 && D[2] != 0)
+				{
+					const int32 Side1Idx = VoxelIndex(FIntVector(NX, Current.Y, NZ));
+					const int32 Side2Idx = VoxelIndex(FIntVector(Current.X, Current.Y, NZ));
+					if (IsBlockedFast(Side1Idx) || IsBlockedFast(Side2Idx))
+					{
+						continue;
+					}
+				}
+				if (D[1] != 0 && D[2] != 0)
+				{
+					const int32 Side1Idx = VoxelIndex(FIntVector(Current.X, NY, NZ));
+					const int32 Side2Idx = VoxelIndex(FIntVector(Current.X, Current.Y, NZ));
+					if (IsBlockedFast(Side1Idx) || IsBlockedFast(Side2Idx))
+					{
+						continue;
+					}
+				}
+
+				float MoveCost;
+				if (D[0] != 0 && D[1] != 0 && D[2] != 0)
+				{
+					MoveCost = DiagonalCost;
+				}
+				else if ((D[0] != 0 && D[1] != 0) || (D[0] != 0 && D[2] != 0) || (D[1] != 0 && D[2] != 0))
+				{
+					MoveCost = FaceDiagonalCost;
+				}
+				else
+				{
+					MoveCost = VoxelSize;
+				}
+
+				const float TentativeG = GScore[CurrentIdx] + MoveCost;
+
+				if (TentativeG < GScore[NeighborIdx])
+				{
+					GScore[NeighborIdx] = TentativeG;
+					FScore[NeighborIdx] = TentativeG + Heuristic(Neighbor, ClampedEnd, FaceDiagonalCost, DiagonalCost);
+					Parents[NeighborIdx] = Current;
+					ParentIndex[NeighborIdx] = CurrentIdx;
+					Push(NeighborIdx);
+				}
+			}
+		}
+
+		if (bFound)
+		{
+			// 回溯父节点，生成路径
+			TArray<FIntVector> VoxelPath;
+			if (StartIdx == EndIdx)
+			{
+				VoxelPath.Add(ClampedStart);
+			}
+			else
+			{
+				int32 Current = EndIdx;
+				while (Current != StartIdx)
+				{
+					VoxelPath.Add(Parents[Current]);
+					Current = ParentIndex[Current];
+				}
+				VoxelPath.Add(ClampedStart);
+				Algo::Reverse(VoxelPath);
+			}
+
+			for (const FIntVector& V : VoxelPath)
+			{
+				Path.Add(ThisNavi->VoxelToWord(V));
+			}
+			if (Path.Num() > 1)
+			{
+				Path[0] = ThisNavi->VoxelToWord(Start);
+				Path.Last() = ThisNavi->VoxelToWord(End);
+			}
+			else if (Path.Num() == 1)
+			{
+				Path[0] = ThisNavi->VoxelToWord(Start);
+			}
+		}
+
+		// 计算完成后，调度回主线程 GameThread
+		AsyncTask(ENamedThreads::GameThread, [ThisNavi, Path,RequestId]()
+		{
+			//  在主线程安全地广播结果，蓝图或其他监听者会收到通知
+			ThisNavi->OnPathFound.Broadcast(RequestId,Path,false);
+				
+		});
+	};
+
+	AsyncTask(ENamedThreads::AnyBackgroundThreadNormalTask, [FindPathTask, Start, End, this,RequestId]()
+	{
+		FindPathTask(Start, End, this,RequestId);
+	});
 }
 
 FIntVector AV3DNavigationData::WordToVoxel(const FVector& World) const

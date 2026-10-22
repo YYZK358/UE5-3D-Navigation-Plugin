@@ -19,8 +19,9 @@ UAirPathfindingComponent::UAirPathfindingComponent()
 void UAirPathfindingComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
+
+
 
 
 // Called every frame
@@ -61,6 +62,22 @@ void UAirPathfindingComponent::MoveToLocation(const FVector& Target)
 	FIntVector Start = NavigationData->WordToVoxel(SelfLocation);
 	FIntVector End = NavigationData->WordToVoxel(Target);
 	TArray<FVector> OutPath = NavigationData->FindPath(Start, End);
+	AutoMoveToLocation(RequestId,OutPath,true);
+}
+
+void UAirPathfindingComponent::MoveToLocationAsync(const FVector& Target)
+{
+	if (!NavigationData)return;
+	SelfLocation = Owner->GetActorLocation();
+	FIntVector Start = NavigationData->WordToVoxel(SelfLocation);
+	FIntVector End = NavigationData->WordToVoxel(Target);
+	NavigationData->FindPathAsync(Start,End,RequestId);
+	NavigationData->OnPathFound.AddDynamic(this,&UAirPathfindingComponent::AutoMoveToLocation);
+}
+
+void UAirPathfindingComponent::AutoMoveToLocation(int64 RRequestId,const TArray<FVector>& OutPath,bool bSuccess)
+{
+	if (RRequestId!=RequestId)return;
 	for (FVector PathPoint : OutPath)
 	{
 		PathPoints.Enqueue(PathPoint);
@@ -71,10 +88,24 @@ void UAirPathfindingComponent::MoveToLocation(const FVector& Target)
 	TargetLocation = *PathPoints.Peek();
 	PathPoints.Pop();
 	//移动开始计时
-	 StatTime = 0;
+	StatTime = 0;
 	//移动失败超时时间
-	 BreakTime = FVector::Distance(TargetLocation,SelfLocation)*2;
-	 MoveStage = (TargetLocation - SelfLocation) * MovementSpeed;
+	BreakTime = FVector::Distance(TargetLocation,SelfLocation)*2;
+	MoveStage = (TargetLocation - SelfLocation) * MovementSpeed;
 	bISMove = true;
 }
+
+void UAirPathfindingComponent::SetNavigator(AV3DNavigationData* Navigator)
+{
+	//IV3DNavigtion_Interface::SetNavigator(Navigator);
+	UE_LOG(LogTemp,Warning,TEXT("%s 添加 %s"),*Owner->GetName(),*Navigator->GetName());
+	this->NavigationData = Navigator;
+	if (NavigationData)
+	{
+		NavigationData->IgnoreClasses.AddUnique(Owner.GetClass());
+	}
+		//NavigationData->IgnoreActors.Add(Owner);
+}
+
+
 

@@ -16,17 +16,25 @@
 
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
 
+// ********** Begin Delegate FOnPathFound **********************************************************
+#define FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h_14_DELEGATE \
+V3DNAVIGATION_API void FOnPathFound_DelegateWrapper(const FMulticastScriptDelegate& OnPathFound, int64 RequestID, TArray<FVector> const& PathPoints, bool bSuccess);
+
+
+// ********** End Delegate FOnPathFound ************************************************************
+
 // ********** Begin Class AV3DNavigationData *******************************************************
-#define FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h_54_RPC_WRAPPERS_NO_PURE_DECLS \
+#define FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h_56_RPC_WRAPPERS_NO_PURE_DECLS \
 	DECLARE_FUNCTION(execVoxelToWord); \
 	DECLARE_FUNCTION(execWordToVoxel); \
+	DECLARE_FUNCTION(execFindPathAsync); \
 	DECLARE_FUNCTION(execFindPath);
 
 
 struct Z_Construct_UClass_AV3DNavigationData_Statics;
 V3DNAVIGATION_API UClass* Z_Construct_UClass_AV3DNavigationData_NoRegister();
 
-#define FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h_54_INCLASS_NO_PURE_DECLS \
+#define FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h_56_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesAV3DNavigationData(); \
 	friend struct ::Z_Construct_UClass_AV3DNavigationData_Statics; \
@@ -37,7 +45,7 @@ public: \
 	DECLARE_SERIALIZER(AV3DNavigationData)
 
 
-#define FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h_54_ENHANCED_CONSTRUCTORS \
+#define FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h_56_ENHANCED_CONSTRUCTORS \
 	/** Deleted move- and copy-constructors, should never be used */ \
 	AV3DNavigationData(AV3DNavigationData&&) = delete; \
 	AV3DNavigationData(const AV3DNavigationData&) = delete; \
@@ -47,13 +55,13 @@ public: \
 	NO_API virtual ~AV3DNavigationData();
 
 
-#define FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h_51_PROLOG
-#define FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h_54_GENERATED_BODY \
+#define FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h_53_PROLOG
+#define FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h_56_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h_54_RPC_WRAPPERS_NO_PURE_DECLS \
-	FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h_54_INCLASS_NO_PURE_DECLS \
-	FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h_54_ENHANCED_CONSTRUCTORS \
+	FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h_56_RPC_WRAPPERS_NO_PURE_DECLS \
+	FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h_56_INCLASS_NO_PURE_DECLS \
+	FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h_56_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 

@@ -18,7 +18,81 @@ UPackage* Z_Construct_UPackage__Script_V3DNavigation();
 V3DNAVIGATION_API UClass* Z_Construct_UClass_AV3DNavigationData_NoRegister();
 V3DNAVIGATION_API UClass* Z_Construct_UClass_UAirPathfindingComponent();
 V3DNAVIGATION_API UClass* Z_Construct_UClass_UAirPathfindingComponent_NoRegister();
+V3DNAVIGATION_API UClass* Z_Construct_UClass_UV3DNavigtion_Interface_NoRegister();
 // ********** End Cross Module References **********************************************************
+
+// ********** Begin Class UAirPathfindingComponent Function AutoMoveToLocation *********************
+struct Z_Construct_UFunction_UAirPathfindingComponent_AutoMoveToLocation_Statics
+{
+	struct AirPathfindingComponent_eventAutoMoveToLocation_Parms
+	{
+		int64 RRequestId;
+		TArray<FVector> OutPath;
+		bool bSuccess;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "V3DNavigation" },
+		{ "ModuleRelativePath", "Public/AirPathfindingComponent.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_OutPath_MetaData[] = {
+		{ "NativeConst", "" },
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function AutoMoveToLocation constinit property declarations ********************
+	static const UECodeGen_Private::FInt64PropertyParams NewProp_RRequestId;
+	static const UECodeGen_Private::FStructPropertyParams NewProp_OutPath_Inner;
+	static const UECodeGen_Private::FArrayPropertyParams NewProp_OutPath;
+	static void NewProp_bSuccess_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_bSuccess;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function AutoMoveToLocation constinit property declarations **********************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function AutoMoveToLocation Property Definitions *******************************
+const UECodeGen_Private::FInt64PropertyParams Z_Construct_UFunction_UAirPathfindingComponent_AutoMoveToLocation_Statics::NewProp_RRequestId = { "RRequestId", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Int64, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AirPathfindingComponent_eventAutoMoveToLocation_Parms, RRequestId), METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FStructPropertyParams Z_Construct_UFunction_UAirPathfindingComponent_AutoMoveToLocation_Statics::NewProp_OutPath_Inner = { "OutPath", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, Z_Construct_UScriptStruct_FVector, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FArrayPropertyParams Z_Construct_UFunction_UAirPathfindingComponent_AutoMoveToLocation_Statics::NewProp_OutPath = { "OutPath", nullptr, (EPropertyFlags)0x0010000008000182, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AirPathfindingComponent_eventAutoMoveToLocation_Parms, OutPath), EArrayPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_OutPath_MetaData), NewProp_OutPath_MetaData) };
+void Z_Construct_UFunction_UAirPathfindingComponent_AutoMoveToLocation_Statics::NewProp_bSuccess_SetBit(void* Obj)
+{
+	((AirPathfindingComponent_eventAutoMoveToLocation_Parms*)Obj)->bSuccess = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UFunction_UAirPathfindingComponent_AutoMoveToLocation_Statics::NewProp_bSuccess = { "bSuccess", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(AirPathfindingComponent_eventAutoMoveToLocation_Parms), &Z_Construct_UFunction_UAirPathfindingComponent_AutoMoveToLocation_Statics::NewProp_bSuccess_SetBit, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UAirPathfindingComponent_AutoMoveToLocation_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UAirPathfindingComponent_AutoMoveToLocation_Statics::NewProp_RRequestId,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UAirPathfindingComponent_AutoMoveToLocation_Statics::NewProp_OutPath_Inner,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UAirPathfindingComponent_AutoMoveToLocation_Statics::NewProp_OutPath,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UAirPathfindingComponent_AutoMoveToLocation_Statics::NewProp_bSuccess,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UAirPathfindingComponent_AutoMoveToLocation_Statics::PropPointers) < 2048);
+// ********** End Function AutoMoveToLocation Property Definitions *********************************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UAirPathfindingComponent_AutoMoveToLocation_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UAirPathfindingComponent, nullptr, "AutoMoveToLocation", 	Z_Construct_UFunction_UAirPathfindingComponent_AutoMoveToLocation_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UAirPathfindingComponent_AutoMoveToLocation_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_UAirPathfindingComponent_AutoMoveToLocation_Statics::AirPathfindingComponent_eventAutoMoveToLocation_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x00420401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UAirPathfindingComponent_AutoMoveToLocation_Statics::Function_MetaDataParams), Z_Construct_UFunction_UAirPathfindingComponent_AutoMoveToLocation_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UAirPathfindingComponent_AutoMoveToLocation_Statics::AirPathfindingComponent_eventAutoMoveToLocation_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UAirPathfindingComponent_AutoMoveToLocation()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UAirPathfindingComponent_AutoMoveToLocation_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UAirPathfindingComponent::execAutoMoveToLocation)
+{
+	P_GET_PROPERTY(FInt64Property,Z_Param_RRequestId);
+	P_GET_TARRAY_REF(FVector,Z_Param_Out_OutPath);
+	P_GET_UBOOL(Z_Param_bSuccess);
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	P_THIS->AutoMoveToLocation(Z_Param_RRequestId,Z_Param_Out_OutPath,Z_Param_bSuccess);
+	P_NATIVE_END;
+}
+// ********** End Class UAirPathfindingComponent Function AutoMoveToLocation ***********************
 
 // ********** Begin Class UAirPathfindingComponent Function MoveToLocation *************************
 struct Z_Construct_UFunction_UAirPathfindingComponent_MoveToLocation_Statics
@@ -75,6 +149,61 @@ DEFINE_FUNCTION(UAirPathfindingComponent::execMoveToLocation)
 }
 // ********** End Class UAirPathfindingComponent Function MoveToLocation ***************************
 
+// ********** Begin Class UAirPathfindingComponent Function MoveToLocationAsync ********************
+struct Z_Construct_UFunction_UAirPathfindingComponent_MoveToLocationAsync_Statics
+{
+	struct AirPathfindingComponent_eventMoveToLocationAsync_Parms
+	{
+		FVector Target;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "V3DNavigation" },
+		{ "ModuleRelativePath", "Public/AirPathfindingComponent.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_Target_MetaData[] = {
+		{ "NativeConst", "" },
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function MoveToLocationAsync constinit property declarations *******************
+	static const UECodeGen_Private::FStructPropertyParams NewProp_Target;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function MoveToLocationAsync constinit property declarations *********************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function MoveToLocationAsync Property Definitions ******************************
+const UECodeGen_Private::FStructPropertyParams Z_Construct_UFunction_UAirPathfindingComponent_MoveToLocationAsync_Statics::NewProp_Target = { "Target", nullptr, (EPropertyFlags)0x0010000008000182, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AirPathfindingComponent_eventMoveToLocationAsync_Parms, Target), Z_Construct_UScriptStruct_FVector, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_Target_MetaData), NewProp_Target_MetaData) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UAirPathfindingComponent_MoveToLocationAsync_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UAirPathfindingComponent_MoveToLocationAsync_Statics::NewProp_Target,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UAirPathfindingComponent_MoveToLocationAsync_Statics::PropPointers) < 2048);
+// ********** End Function MoveToLocationAsync Property Definitions ********************************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UAirPathfindingComponent_MoveToLocationAsync_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UAirPathfindingComponent, nullptr, "MoveToLocationAsync", 	Z_Construct_UFunction_UAirPathfindingComponent_MoveToLocationAsync_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UAirPathfindingComponent_MoveToLocationAsync_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_UAirPathfindingComponent_MoveToLocationAsync_Statics::AirPathfindingComponent_eventMoveToLocationAsync_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04C20401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UAirPathfindingComponent_MoveToLocationAsync_Statics::Function_MetaDataParams), Z_Construct_UFunction_UAirPathfindingComponent_MoveToLocationAsync_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UAirPathfindingComponent_MoveToLocationAsync_Statics::AirPathfindingComponent_eventMoveToLocationAsync_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UAirPathfindingComponent_MoveToLocationAsync()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UAirPathfindingComponent_MoveToLocationAsync_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UAirPathfindingComponent::execMoveToLocationAsync)
+{
+	P_GET_STRUCT_REF(FVector,Z_Param_Out_Target);
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	P_THIS->MoveToLocationAsync(Z_Param_Out_Target);
+	P_NATIVE_END;
+}
+// ********** End Class UAirPathfindingComponent Function MoveToLocationAsync **********************
+
 // ********** Begin Class UAirPathfindingComponent *************************************************
 FClassRegistrationInfo Z_Registration_Info_UClass_UAirPathfindingComponent;
 UClass* UAirPathfindingComponent::GetPrivateStaticClass()
@@ -130,13 +259,18 @@ struct Z_Construct_UClass_UAirPathfindingComponent_Statics
 	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 // ********** End Class UAirPathfindingComponent constinit property declarations *******************
 	static constexpr UE::CodeGen::FClassNativeFunction Funcs[] = {
+		{ .NameUTF8 = UTF8TEXT("AutoMoveToLocation"), .Pointer = &UAirPathfindingComponent::execAutoMoveToLocation },
 		{ .NameUTF8 = UTF8TEXT("MoveToLocation"), .Pointer = &UAirPathfindingComponent::execMoveToLocation },
+		{ .NameUTF8 = UTF8TEXT("MoveToLocationAsync"), .Pointer = &UAirPathfindingComponent::execMoveToLocationAsync },
 	};
 	static UObject* (*const DependentSingletons[])();
 	static constexpr FClassFunctionLinkInfo FuncInfo[] = {
+		{ &Z_Construct_UFunction_UAirPathfindingComponent_AutoMoveToLocation, "AutoMoveToLocation" }, // 862984545
 		{ &Z_Construct_UFunction_UAirPathfindingComponent_MoveToLocation, "MoveToLocation" }, // 1559119955
+		{ &Z_Construct_UFunction_UAirPathfindingComponent_MoveToLocationAsync, "MoveToLocationAsync" }, // 4028405332
 	};
 	static_assert(UE_ARRAY_COUNT(FuncInfo) < 2048);
+	static const UECodeGen_Private::FImplementedInterfaceParams InterfaceParams[];
 	static constexpr FCppClassTypeInfoStatic StaticCppClassTypeInfo = {
 		TCppClassTypeTraits<UAirPathfindingComponent>::IsAbstract,
 	};
@@ -157,6 +291,9 @@ UObject* (*const Z_Construct_UClass_UAirPathfindingComponent_Statics::DependentS
 	(UObject* (*)())Z_Construct_UPackage__Script_V3DNavigation,
 };
 static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_UAirPathfindingComponent_Statics::DependentSingletons) < 16);
+const UECodeGen_Private::FImplementedInterfaceParams Z_Construct_UClass_UAirPathfindingComponent_Statics::InterfaceParams[] = {
+	{ Z_Construct_UClass_UV3DNavigtion_Interface_NoRegister, (int32)VTABLE_OFFSET(UAirPathfindingComponent, IV3DNavigtion_Interface), false },  // 3855682041
+};
 const UECodeGen_Private::FClassParams Z_Construct_UClass_UAirPathfindingComponent_Statics::ClassParams = {
 	&UAirPathfindingComponent::StaticClass,
 	"Engine",
@@ -164,11 +301,11 @@ const UECodeGen_Private::FClassParams Z_Construct_UClass_UAirPathfindingComponen
 	DependentSingletons,
 	FuncInfo,
 	Z_Construct_UClass_UAirPathfindingComponent_Statics::PropPointers,
-	nullptr,
+	InterfaceParams,
 	UE_ARRAY_COUNT(DependentSingletons),
 	UE_ARRAY_COUNT(FuncInfo),
 	UE_ARRAY_COUNT(Z_Construct_UClass_UAirPathfindingComponent_Statics::PropPointers),
-	0,
+	UE_ARRAY_COUNT(InterfaceParams),
 	0x00B000A4u,
 	METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_UAirPathfindingComponent_Statics::Class_MetaDataParams), Z_Construct_UClass_UAirPathfindingComponent_Statics::Class_MetaDataParams)
 };
@@ -193,10 +330,10 @@ UAirPathfindingComponent::~UAirPathfindingComponent() {}
 struct Z_CompiledInDeferFile_FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_AirPathfindingComponent_h__Script_V3DNavigation_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_UAirPathfindingComponent, UAirPathfindingComponent::StaticClass, TEXT("UAirPathfindingComponent"), &Z_Registration_Info_UClass_UAirPathfindingComponent, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UAirPathfindingComponent), 99209770U) },
+		{ Z_Construct_UClass_UAirPathfindingComponent, UAirPathfindingComponent::StaticClass, TEXT("UAirPathfindingComponent"), &Z_Registration_Info_UClass_UAirPathfindingComponent, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UAirPathfindingComponent), 1288778614U) },
 	};
 }; // Z_CompiledInDeferFile_FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_AirPathfindingComponent_h__Script_V3DNavigation_Statics 
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_AirPathfindingComponent_h__Script_V3DNavigation_674720720{
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_AirPathfindingComponent_h__Script_V3DNavigation_648488432{
 	TEXT("/Script/V3DNavigation"),
 	Z_CompiledInDeferFile_FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_AirPathfindingComponent_h__Script_V3DNavigation_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_AirPathfindingComponent_h__Script_V3DNavigation_Statics::ClassInfo),
 	nullptr, 0,

@@ -3,13 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "V3DNavigtion_Interface.h"
 #include "Components/ActorComponent.h"
 #include "Containers/Queue.h"
 #include "AirPathfindingComponent.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class V3DNAVIGATION_API UAirPathfindingComponent : public UActorComponent
+class V3DNAVIGATION_API UAirPathfindingComponent : public UActorComponent,public IV3DNavigtion_Interface
 {
 	GENERATED_BODY()
 
@@ -25,7 +26,7 @@ public:
 	bool bISMove = false;
 	
 	FVector SelfLocation;
-	
+	int64 RequestId=UObject::GetUniqueID();
 	
 	FVector TargetLocation;
 	TQueue<FVector> PathPoints;
@@ -45,4 +46,11 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	UFUNCTION(BlueprintCallable,Category = "V3DNavigation")
 	void MoveToLocation(const FVector& Target);
+	UFUNCTION(BlueprintCallable,Category = "V3DNavigation")
+	void MoveToLocationAsync(const FVector& Target);
+	UFUNCTION(Category = "V3DNavigation")
+	void AutoMoveToLocation(int64 RRequestId,const TArray<FVector>& OutPath,bool bSuccess);
+	
+	virtual void SetNavigator(AV3DNavigationData *Navigator) override;
+	
 };

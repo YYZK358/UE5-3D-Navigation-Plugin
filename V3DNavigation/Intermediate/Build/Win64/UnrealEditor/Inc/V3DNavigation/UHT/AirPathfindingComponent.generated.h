@@ -17,14 +17,16 @@
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
 
 // ********** Begin Class UAirPathfindingComponent *************************************************
-#define FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_AirPathfindingComponent_h_14_RPC_WRAPPERS_NO_PURE_DECLS \
+#define FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_AirPathfindingComponent_h_15_RPC_WRAPPERS_NO_PURE_DECLS \
+	DECLARE_FUNCTION(execAutoMoveToLocation); \
+	DECLARE_FUNCTION(execMoveToLocationAsync); \
 	DECLARE_FUNCTION(execMoveToLocation);
 
 
 struct Z_Construct_UClass_UAirPathfindingComponent_Statics;
 V3DNAVIGATION_API UClass* Z_Construct_UClass_UAirPathfindingComponent_NoRegister();
 
-#define FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_AirPathfindingComponent_h_14_INCLASS_NO_PURE_DECLS \
+#define FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_AirPathfindingComponent_h_15_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesUAirPathfindingComponent(); \
 	friend struct ::Z_Construct_UClass_UAirPathfindingComponent_Statics; \
@@ -32,10 +34,11 @@ private: \
 	friend V3DNAVIGATION_API UClass* ::Z_Construct_UClass_UAirPathfindingComponent_NoRegister(); \
 public: \
 	DECLARE_CLASS2(UAirPathfindingComponent, UActorComponent, COMPILED_IN_FLAGS(0 | CLASS_Config), CASTCLASS_None, TEXT("/Script/V3DNavigation"), Z_Construct_UClass_UAirPathfindingComponent_NoRegister) \
-	DECLARE_SERIALIZER(UAirPathfindingComponent)
+	DECLARE_SERIALIZER(UAirPathfindingComponent) \
+	virtual UObject* _getUObject() const override { return const_cast<UAirPathfindingComponent*>(this); }
 
 
-#define FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_AirPathfindingComponent_h_14_ENHANCED_CONSTRUCTORS \
+#define FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_AirPathfindingComponent_h_15_ENHANCED_CONSTRUCTORS \
 	/** Deleted move- and copy-constructors, should never be used */ \
 	UAirPathfindingComponent(UAirPathfindingComponent&&) = delete; \
 	UAirPathfindingComponent(const UAirPathfindingComponent&) = delete; \
@@ -45,13 +48,13 @@ public: \
 	NO_API virtual ~UAirPathfindingComponent();
 
 
-#define FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_AirPathfindingComponent_h_11_PROLOG
-#define FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_AirPathfindingComponent_h_14_GENERATED_BODY \
+#define FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_AirPathfindingComponent_h_12_PROLOG
+#define FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_AirPathfindingComponent_h_15_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_AirPathfindingComponent_h_14_RPC_WRAPPERS_NO_PURE_DECLS \
-	FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_AirPathfindingComponent_h_14_INCLASS_NO_PURE_DECLS \
-	FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_AirPathfindingComponent_h_14_ENHANCED_CONSTRUCTORS \
+	FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_AirPathfindingComponent_h_15_RPC_WRAPPERS_NO_PURE_DECLS \
+	FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_AirPathfindingComponent_h_15_INCLASS_NO_PURE_DECLS \
+	FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_AirPathfindingComponent_h_15_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 

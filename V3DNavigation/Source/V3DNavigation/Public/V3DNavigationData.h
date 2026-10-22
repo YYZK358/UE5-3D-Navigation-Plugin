@@ -11,6 +11,8 @@
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "V3DNavigationData.generated.h"
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnPathFound, int64,RequestID,const TArray<FVector>&, PathPoints, bool, bSuccess);
+using FPathResultCallback = TFunction<void(const TArray<FVector>&, bool)>;
 
 
 constexpr int32 CHUNK_SIZE = 32;                          // 每个 Chunk 边长（体素）
@@ -67,7 +69,9 @@ public:
 	TArray<TSubclassOf<AActor>> IgnoreClasses;
 	TArray<AActor*> IgnoreActors;
 	FCollisionQueryParams Params;
-	
+	//委托找到路径
+	UPROPERTY(blueprintAssignable, Category = "V3DNavigation")
+	FOnPathFound OnPathFound;
 	//空域大小
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "V3DNavigation")
 	FBox Bounds;
@@ -114,10 +118,12 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	void SetChild();
 	
 	UFUNCTION(BlueprintCallable,Category = "V3DNavigation")
 	TArray<FVector> FindPath(const FIntVector& Start, const FIntVector& End);
-	
+	UFUNCTION(BlueprintCallable,Category = "V3DNavigation")
+	void FindPathAsync(const FIntVector& Start, const FIntVector& End,const int64& RequestId);
 	//体素坐标与世界坐标之间的转换
 	UFUNCTION(BlueprintCallable,Category = "V3DNavigation")
 	FIntVector WordToVoxel(const FVector& World) const;
