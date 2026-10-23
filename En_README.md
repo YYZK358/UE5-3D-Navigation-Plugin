@@ -1,4 +1,4 @@
-# Introduction
+# Introduction([中文](./README.md) | [English](./En_README.md))
 This is a UE5 plugin that supports 3D directional patrol navigation.
 
 # Usage
