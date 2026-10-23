@@ -1,6 +1,7 @@
-# 简介
-这是一个Unreal 插件，支持三维方向的巡逻导航
-# 使用方法
+# 简介( ![English](./En_README.md) )
+这是一个UE5 插件，支持三维方向的巡逻导航
+This is a UE5 plugin that supports patrol navigation in 3D directions.
+
 
 将V3DNavigation.zip解压后放入项目插件文件夹
 
