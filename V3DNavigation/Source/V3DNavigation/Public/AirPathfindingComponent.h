@@ -40,7 +40,7 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -49,8 +49,10 @@ public:
 	UFUNCTION(BlueprintCallable,Category = "V3DNavigation")
 	void MoveToLocationAsync(const FVector& Target);
 	UFUNCTION(Category = "V3DNavigation")
-	void AutoMoveToLocation(int64 RRequestId,const TArray<FVector>& OutPath,bool bSuccess);
+	void AutoMoveToLocation(int64 RRequestId,TArray<FVector> OutPath,bool bSuccess);
 	
 	virtual void SetNavigator(AV3DNavigationData *Navigator) override;
 	
+	UFUNCTION(BlueprintCallable,Category = "V3DNavigation")
+	void GetRandPointInPath(FVector Center,FVector &Out,bool& bFind,float Radius,bool bShowDebug);
 };

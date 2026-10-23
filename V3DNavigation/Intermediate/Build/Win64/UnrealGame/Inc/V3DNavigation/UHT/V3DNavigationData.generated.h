@@ -18,7 +18,7 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 
 // ********** Begin Delegate FOnPathFound **********************************************************
 #define FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h_14_DELEGATE \
-V3DNAVIGATION_API void FOnPathFound_DelegateWrapper(const FMulticastScriptDelegate& OnPathFound, int64 RequestID, TArray<FVector> const& PathPoints, bool bSuccess);
+V3DNAVIGATION_API void FOnPathFound_DelegateWrapper(const FMulticastScriptDelegate& OnPathFound, int64 RequestID, const TArray<FVector>& PathPoints, bool bSuccess);
 
 
 // ********** End Delegate FOnPathFound ************************************************************
@@ -27,6 +27,7 @@ V3DNAVIGATION_API void FOnPathFound_DelegateWrapper(const FMulticastScriptDelega
 #define FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_V3DNavigationData_h_56_RPC_WRAPPERS_NO_PURE_DECLS \
 	DECLARE_FUNCTION(execVoxelToWord); \
 	DECLARE_FUNCTION(execWordToVoxel); \
+	DECLARE_FUNCTION(execGetRandPointInPath); \
 	DECLARE_FUNCTION(execFindPathAsync); \
 	DECLARE_FUNCTION(execFindPath);
 

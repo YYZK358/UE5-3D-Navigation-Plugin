@@ -11,7 +11,7 @@
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "V3DNavigationData.generated.h"
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnPathFound, int64,RequestID,const TArray<FVector>&, PathPoints, bool, bSuccess);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnPathFound, int64,RequestID,TArray<FVector>, PathPoints, bool, bSuccess);
 using FPathResultCallback = TFunction<void(const TArray<FVector>&, bool)>;
 
 
@@ -107,7 +107,7 @@ protected:
 	void InitGridSize();
 	//绘制体素
 	void DrawVoxels();
-	
+	void DrawVoxel(FIntVector Voxel);
 	void CheckBoundsAndMakers();
 	void CheckVoxelOverlap(const FIntVector& Voxel);
 	bool CheckChunkOverlap(const FVector& Local);
@@ -124,6 +124,10 @@ public:
 	TArray<FVector> FindPath(const FIntVector& Start, const FIntVector& End);
 	UFUNCTION(BlueprintCallable,Category = "V3DNavigation")
 	void FindPathAsync(const FIntVector& Start, const FIntVector& End,const int64& RequestId);
+	
+	UFUNCTION(BlueprintCallable,Category = "V3DNavigation")
+	void GetRandPointInPath(FVector Center,FVector &Out,bool& bFind,float Radius,bool bShowDebug);
+	
 	//体素坐标与世界坐标之间的转换
 	UFUNCTION(BlueprintCallable,Category = "V3DNavigation")
 	FIntVector WordToVoxel(const FVector& World) const;

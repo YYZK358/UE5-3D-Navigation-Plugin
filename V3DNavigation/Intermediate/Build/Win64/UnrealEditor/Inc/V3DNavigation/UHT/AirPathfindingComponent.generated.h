@@ -18,6 +18,7 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 
 // ********** Begin Class UAirPathfindingComponent *************************************************
 #define FID_test_V3DNavigation_HostProject_Plugins_V3DNavigation_Source_V3DNavigation_Public_AirPathfindingComponent_h_15_RPC_WRAPPERS_NO_PURE_DECLS \
+	DECLARE_FUNCTION(execGetRandPointInPath); \
 	DECLARE_FUNCTION(execAutoMoveToLocation); \
 	DECLARE_FUNCTION(execMoveToLocationAsync); \
 	DECLARE_FUNCTION(execMoveToLocation);

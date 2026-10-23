@@ -21,7 +21,7 @@ static_assert(!UE_WITH_CONSTINIT_UOBJECT, "This generated code can only be compi
 			SingletonFuncArray,
 			UE_ARRAY_COUNT(SingletonFuncArray),
 			PKG_CompiledIn | 0x00000000,
-			0x5C5F5450,
+			0x55E915B4,
 			0xD3E6B5DA,
 			METADATA_PARAMS(0, nullptr)
 		};
@@ -29,5 +29,5 @@ static_assert(!UE_WITH_CONSTINIT_UOBJECT, "This generated code can only be compi
 	}
 	return Z_Registration_Info_UPackage__Script_V3DNavigation.OuterSingleton;
 }
-static FRegisterCompiledInInfo Z_CompiledInDeferPackage_UPackage__Script_V3DNavigation(Z_Construct_UPackage__Script_V3DNavigation, TEXT("/Script/V3DNavigation"), Z_Registration_Info_UPackage__Script_V3DNavigation, CONSTRUCT_RELOAD_VERSION_INFO(FPackageReloadVersionInfo, 0x5C5F5450, 0xD3E6B5DA));
+static FRegisterCompiledInInfo Z_CompiledInDeferPackage_UPackage__Script_V3DNavigation(Z_Construct_UPackage__Script_V3DNavigation, TEXT("/Script/V3DNavigation"), Z_Registration_Info_UPackage__Script_V3DNavigation, CONSTRUCT_RELOAD_VERSION_INFO(FPackageReloadVersionInfo, 0x55E915B4, 0xD3E6B5DA));
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

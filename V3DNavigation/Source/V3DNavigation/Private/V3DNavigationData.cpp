@@ -17,7 +17,7 @@ AV3DNavigationData::AV3DNavigationData()
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("BoundsRoot"));
 	BoundsBox = CreateDefaultSubobject<UBoxComponent>(TEXT("BoundsBox"));
 	BoundsBox->SetupAttachment(RootComponent);
-	//BoundsBox->SetCollisionProfileName(FName("Trigger"));
+	BoundsBox->SetCollisionProfileName(FName("Trigger"));
 	
 }
 
@@ -25,10 +25,9 @@ AV3DNavigationData::AV3DNavigationData()
 void AV3DNavigationData::BeginPlay()
 {
 	Super::BeginPlay();
-	BoundsBox->UpdateBounds();
 	Bounds = BoundsBox->Bounds.GetBox();
-	SetChild();
 	InitGridSize();
+	SetChild();
 	//添加忽略列表
 	for (TSubclassOf<AActor> Class : IgnoreClasses)
 	{
@@ -105,6 +104,16 @@ void AV3DNavigationData::DrawVoxels()
 			}
 		}
 	}
+}
+
+void AV3DNavigationData::DrawVoxel(FIntVector Voxel)
+{
+		DrawDebugBox(GetWorld(),
+		VoxelToWord(Voxel),
+		FVector::One() * VoxelSize * 0.5f,
+		FQuat::Identity,
+		FColor::Green,
+		true);
 }
 
 void AV3DNavigationData::CheckBoundsAndMakers()
@@ -231,11 +240,22 @@ void AV3DNavigationData::Tick(float DeltaTime)
 
 void AV3DNavigationData::SetChild()
 {
+	if (!BoundsBox)
+	{
+		return;
+	}
+
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+
 	//TArray<AActor*> tChildren;
 	TArray<FOverlapResult> Overlaps;
 	FComponentQueryParams QueryParams;
 	QueryParams.AddIgnoredActor(this);
-	GetWorld()->ComponentOverlapMultiByChannel(
+	World->ComponentOverlapMultiByChannel(
 		Overlaps,
 		BoundsBox,
 		BoundsBox->GetComponentLocation(),
@@ -243,10 +263,16 @@ void AV3DNavigationData::SetChild()
 		ECC_WorldDynamic,
 		QueryParams
 	);
+
 	//BoundsBox->GetOverlappingActors(tChildren);
 	for (int32 i = 0; i < Overlaps.Num(); i++)
 	{
-		UActorComponent* AirCom = Overlaps[i].GetActor()->GetComponentByClass(UAirPathfindingComponent::StaticClass());
+		AActor* OverlappedActor = Overlaps[i].GetActor();
+		if (!OverlappedActor)
+		{
+			continue;
+		}
+		UActorComponent* AirCom = OverlappedActor->GetComponentByClass(UAirPathfindingComponent::StaticClass());
 		if (!AirCom) continue;
 		IV3DNavigtion_Interface* interface = Cast<IV3DNavigtion_Interface>(AirCom);
 		if (!interface) continue;
@@ -567,9 +593,16 @@ TArray<FVector> AV3DNavigationData::FindPath(const FIntVector& Start, const FInt
 
 void AV3DNavigationData::FindPathAsync(const FIntVector& Start, const FIntVector& End,const int64& RequestId)
 {
-	auto FindPathTask = [](const FIntVector& Start, const FIntVector& End,AV3DNavigationData* ThisNavi,const int64& RequestId)
+	auto FindPathTask = [](const FIntVector& Start, const FIntVector& End,TWeakObjectPtr<AV3DNavigationData> WeakThisNavi,const int64& RequestId)
 	{
 		TArray<FVector> Path;
+
+		AV3DNavigationData* ThisNavi = WeakThisNavi.Get();
+		if (!ThisNavi)
+		{
+			return;
+		}
+
 		float VoxelSize = ThisNavi->VoxelSize;
 		FIntVector GridSize = ThisNavi->GridSize;
 
@@ -586,11 +619,12 @@ void AV3DNavigationData::FindPathAsync(const FIntVector& Start, const FIntVector
 		if (GridSize.X <= 0 || GridSize.Y <= 0 || GridSize.Z <= 0)
 		{
 			// 计算完成后，调度回主线程 GameThread
-			AsyncTask(ENamedThreads::GameThread, [ThisNavi, Path,RequestId]()
+			AsyncTask(ENamedThreads::GameThread, [WeakThisNavi, Path, RequestId]()
 			{
-				//  在主线程安全地广播结果，蓝图或其他监听者会收到通知
-				ThisNavi->OnPathFound.Broadcast(RequestId,Path,false);
-				
+				if (AV3DNavigationData* Navi = WeakThisNavi.Get())
+				{
+					Navi->OnPathFound.Broadcast(RequestId, Path, false);
+				}
 			});
 			return;
 		}
@@ -599,10 +633,12 @@ void AV3DNavigationData::FindPathAsync(const FIntVector& Start, const FIntVector
 		if (ThisNavi->IsBlocked(ClampedStart) || ThisNavi->IsBlocked(ClampedEnd))
 		{
 			// 计算完成后，调度回主线程 GameThread
-			AsyncTask(ENamedThreads::GameThread, [ThisNavi, Path,RequestId]()
+			AsyncTask(ENamedThreads::GameThread, [WeakThisNavi, Path, RequestId]()
 			{
-				//  在主线程安全地广播结果，蓝图或其他监听者会收到通知
-				ThisNavi->OnPathFound.Broadcast(RequestId,Path,false);
+				if (AV3DNavigationData* Navi = WeakThisNavi.Get())
+				{
+					Navi->OnPathFound.Broadcast(RequestId, Path, false);
+				}
 			});
 			return;
 		}
@@ -698,11 +734,12 @@ void AV3DNavigationData::FindPathAsync(const FIntVector& Start, const FIntVector
 		if (IsBlockedFast(StartIdx) || IsBlockedFast(EndIdx))
 		{
 			// 计算完成后，调度回主线程 GameThread
-			AsyncTask(ENamedThreads::GameThread, [ThisNavi, Path,RequestId]()
+			AsyncTask(ENamedThreads::GameThread, [WeakThisNavi, Path, RequestId]()
 			{
-				//  在主线程安全地广播结果，蓝图或其他监听者会收到通知
-				ThisNavi->OnPathFound.Broadcast(RequestId,Path,false);
-				
+				if (AV3DNavigationData* Navi = WeakThisNavi.Get())
+				{
+					Navi->OnPathFound.Broadcast(RequestId, Path, false);
+				}
 			});
 			return;
 		}
@@ -895,18 +932,44 @@ void AV3DNavigationData::FindPathAsync(const FIntVector& Start, const FIntVector
 		}
 
 		// 计算完成后，调度回主线程 GameThread
-		AsyncTask(ENamedThreads::GameThread, [ThisNavi, Path,RequestId]()
+		AsyncTask(ENamedThreads::GameThread, [WeakThisNavi, Path, RequestId]()
 		{
 			//  在主线程安全地广播结果，蓝图或其他监听者会收到通知
-			ThisNavi->OnPathFound.Broadcast(RequestId,Path,false);
-				
+			if (AV3DNavigationData* Navi = WeakThisNavi.Get())
+			{
+				Navi->OnPathFound.Broadcast(RequestId, Path, false);
+			}
 		});
 	};
 
-	AsyncTask(ENamedThreads::AnyBackgroundThreadNormalTask, [FindPathTask, Start, End, this,RequestId]()
+	TWeakObjectPtr<AV3DNavigationData> WeakThis = this;
+	AsyncTask(ENamedThreads::AnyBackgroundThreadNormalTask, [FindPathTask, Start, End, WeakThis, RequestId]()
 	{
-		FindPathTask(Start, End, this,RequestId);
+		FindPathTask(Start, End, WeakThis, RequestId);
 	});
+}
+
+void AV3DNavigationData::GetRandPointInPath(FVector Center,FVector &Out,bool& bFind,float Radius,bool bShowDebug)
+{
+	//FIntVector center  = WordToVoxel(Center);
+	
+	for (int i=0;i<=100;i++)
+	{
+		Out = {FMath::RandRange(Center.X-Radius,Center.X+Radius),
+			FMath::RandRange(Center.Y-Radius,Center.Y+Radius),
+			FMath::RandRange(Center.Z-Radius,Center.Z+Radius)};
+		if (!IsBlocked(WordToVoxel(Out)))
+		{
+			UE_LOG(LogTemp,Warning,TEXT("Navigation:找到一个随机点"));
+			bFind = true;
+			if (bShowDebug)
+			{
+				DrawVoxel(WordToVoxel(Out));
+			}
+			return;
+		}
+	}
+	bFind = false;
 }
 
 FIntVector AV3DNavigationData::WordToVoxel(const FVector& World) const

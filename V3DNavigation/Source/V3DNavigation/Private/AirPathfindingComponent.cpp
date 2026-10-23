@@ -19,9 +19,17 @@ UAirPathfindingComponent::UAirPathfindingComponent()
 void UAirPathfindingComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	NavigationData->OnPathFound.AddUniqueDynamic(this,&UAirPathfindingComponent::AutoMoveToLocation);
 }
 
-
+void UAirPathfindingComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (NavigationData)
+	{
+		NavigationData->OnPathFound.RemoveDynamic(this, &UAirPathfindingComponent::AutoMoveToLocation);
+	}
+	Super::EndPlay(EndPlayReason);
+}
 
 
 // Called every frame
@@ -72,10 +80,10 @@ void UAirPathfindingComponent::MoveToLocationAsync(const FVector& Target)
 	FIntVector Start = NavigationData->WordToVoxel(SelfLocation);
 	FIntVector End = NavigationData->WordToVoxel(Target);
 	NavigationData->FindPathAsync(Start,End,RequestId);
-	NavigationData->OnPathFound.AddDynamic(this,&UAirPathfindingComponent::AutoMoveToLocation);
+	
 }
 
-void UAirPathfindingComponent::AutoMoveToLocation(int64 RRequestId,const TArray<FVector>& OutPath,bool bSuccess)
+void UAirPathfindingComponent::AutoMoveToLocation(int64 RRequestId,TArray<FVector> OutPath,bool bSuccess)
 {
 	if (RRequestId!=RequestId)return;
 	for (FVector PathPoint : OutPath)
@@ -105,6 +113,17 @@ void UAirPathfindingComponent::SetNavigator(AV3DNavigationData* Navigator)
 		NavigationData->IgnoreClasses.AddUnique(Owner.GetClass());
 	}
 		//NavigationData->IgnoreActors.Add(Owner);
+}
+
+void UAirPathfindingComponent::GetRandPointInPath(FVector Center, FVector& Out, bool& bFind, float Radius,
+	bool bShowDebug)
+{
+	if (!NavigationData)
+	{
+		bFind = false;
+		return;
+	}
+	NavigationData->GetRandPointInPath(Center,Out,bFind,Radius,bShowDebug);
 }
 
 
