@@ -19,7 +19,10 @@ UAirPathfindingComponent::UAirPathfindingComponent()
 void UAirPathfindingComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	NavigationData->OnPathFound.AddUniqueDynamic(this,&UAirPathfindingComponent::AutoMoveToLocation);
+	if (NavigationData)
+	{
+		NavigationData->OnPathFound.AddUniqueDynamic(this,&UAirPathfindingComponent::AutoMoveToLocation);
+	}
 }
 
 void UAirPathfindingComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
